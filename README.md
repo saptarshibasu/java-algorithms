@@ -70,12 +70,21 @@ A nice property of 31 is that the multiplication can be replaced by a shift and 
 
 ### Convert String to bytes[] & Vice Versa
 
-byte[] b = string.getBytes(StandardCharsets.UTF_8);
+    byte[] b = string.getBytes(StandardCharsets.UTF_8);
 
-new String(b, StandardCharsets.UTF_8);
+    new String(b, StandardCharsets.UTF_8);
 
 ### Convert String to char[] & Vice Versa
 
-char[] charArray = str.toCharArray();
+    char[] charArray = str.toCharArray();
 
-new String(charArray);
+    new String(charArray);
+
+### Generate an AES 256 bit Key
+
+    KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+    keyGen.init(256);
+    SecretKey secretKey = keyGen.generateKey();
+
+### Generate a MAC 256 bit key
+
