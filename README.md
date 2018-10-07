@@ -22,6 +22,27 @@ This enables efficiently identifying the bucket from the hashcode
 
 e.g. hashcode & (Capacity - 1) enstead of modulo or division operation
 
+### Sorted Data helps in Branch Prediction
+
+If within a loop there are branching instructions (if else) based on the input data, the loop performance will improve with a sorted input data set due to modern processor branch predictions.
+
+### LinkedHashMap
+
+LinkedHashMap can maintain a specific order of the entries (predictable iteraion order)
+- Insertion order
+- Access order
+
+The underlying data structure is a doubly linked list.
+
+If the map is constructed to preserve access order, every `get()` call will increase the modCount (which is used by the Iterator to throw ConcurrentMModificationException) and also move the entry before the current head of the LinkedList. This functionality can be used to implement LRU cache, provided the `removeEldestEntry()` is overridden to implement a cache eviction policy.
+
+### Unicode Charset
+
+UTF-8 is the most commonly used Unicode character encoding. It is a variable length Unicode encoding.
+
+
+## Miscellaneous Code Snippets
+
 ### hashCode() implementation of String class
 
     public int hashCode() {
@@ -47,24 +68,6 @@ where a, b are member variables;
 
 A nice property of 31 is that the multiplication can be replaced by a shift and a subtraction for better performance: `31 * i == (i << 5) - i`. Modern VMs do this sort of optimization automatically.
 
-### Sorted Data helps in Branch Prediction
-
-If within a loop there are branching instructions (if else) based on the input data, the loop performance will improve with a sorted input data set due to modern processor branch predictions.
-
-### LinkedHashMap
-
-LinkedHashMap can maintain a specific order of the entries (predictable iteraion order)
-- Insertion order
-- Access order
-
-The underlying data structure is a doubly linked list.
-
-If the map is constructed to preserve access order, every `get()` call will increase the modCount (which is used by the Iterator to throw ConcurrentMModificationException) and also move the entry before the current head of the LinkedList. This functionality can be used to implement LRU cache, provided the `removeEldestEntry()` is overridden to implement a cache eviction policy.
-
-### Unicode Charset
-
-UTF-8 is the most commonly used Unicode character encoding. It is a variable length Unicode encoding.
-
 ### Convert String to bytes[] & Vice Versa
 
 byte[] b = string.getBytes(StandardCharsets.UTF_8);
@@ -76,9 +79,3 @@ new String(b, StandardCharsets.UTF_8);
 char[] charArray = str.toCharArray();
 
 new String(charArray);
-
-
-
-
-## Miscellaneous Code Snippets
-
