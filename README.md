@@ -40,6 +40,13 @@ If the map is constructed to preserve access order, every `get()` call will incr
 
 UTF-8 is the most commonly used Unicode character encoding. It is a variable length Unicode encoding.
 
+### JSON Web Token (JWT) Digital Signature Algorithm
+
+JSON Web Token (JWT) are usually digitally signed by HMAC SHA256
+
+### java.security.SecureRandom
+
+Use `java.security.SecureRandom` for Generating Cryptographic Random Numbers such as nonce, IV (initialization Vector) etc.
 
 ## Miscellaneous Code Snippets
 
