@@ -17,7 +17,7 @@ public class RandomIvNonceGeneratorTest {
 		try {
 			byte[] ivNonce = rng.getNextBytes(8);
 			assertEquals(ivNonce.length, 8);
-			logger.debug("The generate IV / Nonce is: {}", ivNonce);
+			logger.debug("The generated random IV / Nonce is: {}", ivNonce);
 			
 		} catch(Exception e) {
 			fail("Exception occured", e);

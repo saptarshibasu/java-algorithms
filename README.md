@@ -95,9 +95,11 @@ A nice property of 31 is that the multiplication can be replaced by a shift and 
 
 ### Generate a 128 bit Random IV / Nonce
 
-	 byte[] ivNonce = new byte[bytesNum];
-	 SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
-	 prng.setSeed(prng.generateSeed(bytesNum));
-	 prng.nextBytes(ivNonce);
-	 return ivNonce;
+	byte[] ivNonce = new byte[16];
+	// Same instance can be used for multiple IVs / nonce
+	SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
+	// Re-seed periodically after a given number of byte generation
+	prng.setSeed(prng.generateSeed(bytesNum));
+	prng.nextBytes(ivNonce);
+	return ivNonce;
 
