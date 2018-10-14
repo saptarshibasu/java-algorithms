@@ -1,4 +1,4 @@
-# Quick Cryptography Facts To Build a Secured Software
+# Quick Cryptography
 
 ## Stream Cipher
 

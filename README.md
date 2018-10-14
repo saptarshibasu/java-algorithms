@@ -56,7 +56,7 @@ Use `java.security.SecureRandom` for Generating Cryptographic Random Numbers suc
         int h = hash;
         if (h == 0 && value.length > 0) {
             char val[] = value;
-
+            
             for (int i = 0; i < value.length; i++) {
                 h = 31 * h + val[i];
             }
@@ -78,13 +78,13 @@ A nice property of 31 is that the multiplication can be replaced by a shift and 
 ### Convert String to bytes[] & Vice Versa
 
     byte[] b = string.getBytes(StandardCharsets.UTF_8);
-
+    
     new String(b, StandardCharsets.UTF_8);
 
 ### Convert String to char[] & Vice Versa
 
     char[] charArray = str.toCharArray();
-
+    
     new String(charArray);
 
 ### Generate an AES 256 bit Key
@@ -93,5 +93,11 @@ A nice property of 31 is that the multiplication can be replaced by a shift and 
     keyGen.init(256);
     SecretKey secretKey = keyGen.generateKey();
 
-### Generate a MAC 256 bit key
+### Generate a 128 bit Random IV / Nonce
+
+	 byte[] ivNonce = new byte[bytesNum];
+	 SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
+	 prng.setSeed(prng.generateSeed(bytesNum));
+	 prng.nextBytes(ivNonce);
+	 return ivNonce;
 
