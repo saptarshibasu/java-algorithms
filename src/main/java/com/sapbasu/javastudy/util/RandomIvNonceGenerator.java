@@ -18,7 +18,7 @@ public class RandomIvNonceGenerator {
 		
 		prng = Optional.ofNullable(prng).orElseGet(() -> {
 			try {
-				prng = SecureRandom.getInstance("SHA1PRNG");
+				prng = SecureRandom.getInstanceStrong();
 			} catch (NoSuchAlgorithmException e) {
 				throw new RuntimeException("Wrong algorithm name", e);
 			}
@@ -27,6 +27,7 @@ public class RandomIvNonceGenerator {
 
 		if(bytesGenerated > Math.pow(2, 16) || bytesGenerated == 0) {
 			prng.setSeed(prng.generateSeed(bytesNum));
+			bytesGenerated = 0;
 		}
 		
 		prng.nextBytes(ivNonce);

@@ -42,6 +42,34 @@ CBC requires padding. If the length of the message text is an exact multiple of 
 
 This mode is completely parallelizable and it also uses an unpredictable or random IV which acts as a counter and is used along with the secret key to encrypt each blocks. Padding is not required here and the secret key should change after encrypting 2^64 blocks.
 
-Counter mode uses a PRF and does not use the block cipher decryption capabilities which uses PRP. Hence, counter mode is more general and we can use any primitive like Salsa 20 as a PRF.
+### GCM / CCM / EAX (Authenticated Encryption Modes)
 
-Here PRP (Pseudo Random Permutation) is a bijective function i.e. the input and the output are paired - for the same input we'll always get the same output. And then, there has to be an equivalent decryption algorithm in PRP. On the other hand, in PRF is not bijective. In the counter mode we are using the counter IV to generate a PRF.
+CBC and CTR modes provide confidentiality but not integrity. GCM / CCM / EAX are the modes that provide both. 
+
+GCM is CTR-based encryption then CW-MAC. It performs well in Intel architecture as Intel provides specialized instructions for GCM.
+
+CCM is CBC-MAC then CTR-mode encryption. CCM uses AES for both encryption and MAC.
+
+EAX is CTR-mode encryption then CMAC
+
+Since all three of GCM, CCM and EAX are CTR-based encryption, they don't need any padding and therefore they are safe from the padding related attacks.
+
+All these modes support AEAD (Authenticated Encryption with Associated Data). AEAD means that the associated data is not encrypted, whereas the body of the message is encrypted. However, the MAC is computed on both the associated data ad message body taken together.
+
+GCM uses a very fast MAC and hence its performance is better as compared to the other two which uses block cipher for both encryption and MAC.
+
+OCB is the fastest mode among all of these. However, it has patents. Therefore, GCM is the right mode to be used in most of the cases. It may, however, have a large code size (if not implemented on an Intel architecture).
+
+## Password Hashing
+
+Password hashing is something where we don't want speed because speed would enable a brute-force attacker to quickly find out the password.
+
+Hence SHA256 is not suitable for password hashing. Instead, PBKDF2, bcrypt or scrypt should be used for password hashing.
+
+bcrypt is currently the defacto standard for passwoord hashing. scrypt is supposed to be stronger but it is relatively new and therefore less vetted.
+
+## TLS
+
+TLS latest version is 1.2. The TLS cipher suites are provided by Sun JSSE provider in Java. The cipher suite to be used is determined by the client preference. In the server side, it is a good idea to disable the cipher suites that use the old and weak algorithms. For e.g. the cipher suites that use CBC mode are vulnerable to certain types of attacks. However, disabling all cipher suites using CBC would mean blocking out pre-4.3 android, pre-7 java, pre-11 internet explorer, pre-1.0 openssl as well as pre-7 safari on OS X.
+
+
