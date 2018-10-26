@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Test;
 
-public class EncryptionDecryptionTest {
+public class CryptoTest {
 	
 	private int KEY_LEN = 256; //bits
 
