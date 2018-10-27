@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -129,6 +130,37 @@ public class SortedArrayMergeTest {
       List<Employee> mergedArray = SortedListMerge.mergeSmall(empList1,
           empList2, new EmpAgeComparator());
       Collections.sort(concatenatedArray, new EmpAgeComparator());
+      
+      assertEquals(concatenatedArray, mergedArray);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+    
+  }
+
+  @Test
+  public void whenMergeSmallCalled_givenTwoSortedArraysOfString_oneMergedArrayReturned() {
+    try {
+      List<String> dayList1 = new ArrayList<String>(5);
+      dayList1.add("Fri");
+      dayList1.add("Sat");
+      dayList1.add("Wed");
+      
+      List<String> dayList2 = new ArrayList<String>(5);
+      dayList2.add("Mon");
+      dayList2.add("Sun");
+      dayList2.add("Thu");
+      dayList2.add("Tue");
+            
+      List<String> concatenatedArray = new ArrayList<String>(
+          dayList1.size() + dayList2.size());
+      concatenatedArray.addAll(dayList1);
+      concatenatedArray.addAll(dayList2);
+      
+      List<String> mergedArray = SortedListMerge.mergeSmall(dayList1,
+          dayList2, Comparator.<String>naturalOrder());
+      Collections.sort(concatenatedArray, Comparator.<String>naturalOrder());
       
       assertEquals(concatenatedArray, mergedArray);
     } catch (Exception e) {
