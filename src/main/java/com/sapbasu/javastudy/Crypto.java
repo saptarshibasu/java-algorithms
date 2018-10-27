@@ -35,17 +35,17 @@ public class Crypto {
   // (for the purpose of re-seeding)
   private static int bytesGenerated = 0;
   
-  public byte[] encrypt(byte[] input, SecretKeySpec key) throws Exception {
+  public static byte[] encrypt(byte[] input, SecretKeySpec key) throws Exception {
     
     Objects.requireNonNull(input, "Input message cannot be null");
     Objects.requireNonNull(key, "key cannot be null");
     
     if (input.length == 0) {
-      throw new IllegalArgumentException("Size of key must be 128, 192 or 256");
+      throw new IllegalArgumentException("Length of message cannot be 0");
     }
     
     if (!ALLOWED_KEY_SIZES.contains(key.getEncoded().length * 8)) {
-      
+      throw new IllegalArgumentException("Size of key must be 128, 192 or 256");
     }
     
     Cipher cipher = Cipher.getInstance(ENCRYPT_ALGO);
@@ -65,7 +65,7 @@ public class Crypto {
     return cipherText;
   }
   
-  public byte[] decrypt(byte[] input, SecretKeySpec key) throws Exception {
+  public static byte[] decrypt(byte[] input, SecretKeySpec key) throws Exception {
     Objects.requireNonNull(input, "Input message cannot be null");
     Objects.requireNonNull(key, "key cannot be null");
     
@@ -87,7 +87,7 @@ public class Crypto {
     return cipher.doFinal(messageCipher);
   }
   
-  public byte[] getIV(int bytesNum) {
+  public static byte[] getIV(int bytesNum) {
     
     if (bytesNum < 1) throw new IllegalArgumentException(
         "Number of bytes must be greater than 0");
@@ -114,6 +114,7 @@ public class Crypto {
     return iv;
   }
   
+  @SuppressWarnings("unused")
   private static void clearSecretKeySpec(SecretKeySpec key)
       throws IllegalArgumentException, IllegalAccessException,
       NoSuchFieldException, SecurityException {

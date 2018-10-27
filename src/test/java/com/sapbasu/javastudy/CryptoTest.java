@@ -19,7 +19,6 @@ public class CryptoTest {
   @Test
   public void whenDecryptCalled_givenEncryptedTest_returnsDecryptedBytes()
       throws Exception {
-    Crypto crypto = new Crypto();
     
     char[] input = {'e', 'n', 'c', 'r', 'y', 'p', 't', 'i', 'o', 'n'};
     byte[] inputBytes = convertInputToBytes(input);
@@ -31,8 +30,8 @@ public class CryptoTest {
     SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(),
         "AES");
     
-    byte[] encryptedBytes = crypto.encrypt(inputBytes, secretKeySpec);
-    byte[] decryptedBytes = crypto.decrypt(encryptedBytes, secretKeySpec);
+    byte[] encryptedBytes = Crypto.encrypt(inputBytes, secretKeySpec);
+    byte[] decryptedBytes = Crypto.decrypt(encryptedBytes, secretKeySpec);
     
     assertArrayEquals(inputBytes, decryptedBytes);
     
