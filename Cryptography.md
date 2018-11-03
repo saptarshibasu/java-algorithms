@@ -72,4 +72,32 @@ bcrypt is currently the defacto standard for passwoord hashing. scrypt is suppos
 
 TLS latest version is 1.2. The TLS cipher suites are provided by Sun JSSE provider in Java. The cipher suite to be used is determined by the client preference. In the server side, it is a good idea to disable the cipher suites that use the old and weak algorithms. For e.g. the cipher suites that use CBC mode are vulnerable to certain types of attacks. However, disabling all cipher suites using CBC would mean blocking out pre-4.3 android, pre-7 java, pre-11 internet explorer, pre-1.0 openssl as well as pre-7 safari on OS X.
 
+Given that GCM is the one of the most secured encryption modes available, it may be a good idea to enable only the cipher suites using GCM. However, it should be noted that the GCM is introduced in TLS 1.2 only and the major browser versions started supporting GCM since Oct, 2013. The browser versions released before that date will be blocked with the GCM-only strategy.
+
+We can use [CanIUse](https://caniuse.com/#search=tls) to find out which browser version supports which version of TLS. 
+
+[Qualis](https://www.ssllabs.com/ssltest/) shows some of the best SSL configured websites and the cipher suites used. [This](https://www.ssllabs.com/ssltest/viewMyClient.html) also shows the cipher suites used by your browser. The best practices for TLS deployment and the recommended list of cipher suites are listed [here](https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices). Finally, [this](https://www.ssllabs.com/ssltest/clients.html) table lists which browser versions support what.
+
+PCI DSS no longer supports TLS1.0 and below versions.
+
+### TLS Cipher Suite
+
+A typical cipher suite name looks like this:
+
+*TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256*
+
+Here 
+* *ECDHE* - Symmetric key exchange algorithm
+* *ECDSA* - Digital Signature algorithm used for signing the key
+* *AES_128_GCM* - Block cipher and mode with 128 bit key
+
+*ECDHE* stands for Elliptic Curve Diffie Hellman Ephemeral. The *Elliptic* variant (the first *E*) is used for performance, whereas the *Ephemeral* variant (the last *E*) is for *forward secrecy*. Forward secrecy means that if an attacker keeps recording all the communications over TLS and at a later point of time somehow gets hold of the private key, he/she cannot decrypt the past recorded communications. 
+
+RSA is an alternative to ECDHE (as in TLS_RSA_WITH_AES_128_GCM_SHA256) and used in older cipher suites. However, RSA does not provide forward secrecy and hence such cipher suites are considered weak today.
+
+The older cipher suites using the other variants of Diffie Hellman algorithm that don't use either the Elliptic Curve or the Ephemeral keys shouldn't be used anymore.
+
+*ECDSA* is used for authenticating the shared secret. ECDSA is weaker and slower than the other authenticating algorithms like HMAC. Yet it is used for shared key authentication because it does not need the verifier know the secret key used to create the authentication tag. The verifier can very well use the public key to verify the integrity of the message. Here also RSA is an alternative. However, to acheive a certain level of security, RSA needs much longer key than ECDSA. Therefore ECDSA provides better performance in mobile devices or other devices with limited resources.
+
+*AES_128_GCM* - Once a common secret key is shared between both the parties (usually a browser and a web server), a symmetric algorithm is used to encrypt the message exchanges between the parties. In this particular case, the block cipher *AES* with *128* bit key and *GCM* authentication mode is used. (Note: AES block size is always 128 which is not usually mentioned. AES_256 or AES_128 actually indicate the key size).
 

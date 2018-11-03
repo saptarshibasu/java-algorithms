@@ -1,6 +1,7 @@
 package com.sapbasu.javastudy;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -40,7 +41,7 @@ public class Trie {
     
     return exists(input, rootNode);
   }
-  
+    
   private void add(String input, TrieNode node) {
     Objects.requireNonNull(input, "Input cannot be null");
     Objects.requireNonNull(node, "Input cannot be null");
@@ -55,7 +56,7 @@ public class Trie {
   private boolean exists(String input, TrieNode node) {
     
     Objects.requireNonNull(input, "Input cannot be null");
-    Objects.requireNonNull(node, "Input cannot be null");
+    Objects.requireNonNull(node, "Node cannot be null");
     
     if (input.length() == 0) return true;
     
