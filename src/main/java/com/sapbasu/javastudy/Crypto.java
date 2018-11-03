@@ -161,8 +161,8 @@ public class Crypto {
    * same reason, the client calling these encryption or decryption methods
    * should clear all the variables or arrays holding the message or the key
    * after they are no longer needed. Since Java 8 does not provide an easy
-   * mechanism to clear the key from SecretKeySpec, this method uses reflection
-   * to clear the key
+   * mechanism to clear the key from {@code SecretKeySpec}, this method uses
+   * reflection to clear the key
    * 
    * @param key
    *          The secret key used to do the encryption
