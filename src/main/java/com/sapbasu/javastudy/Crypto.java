@@ -15,8 +15,17 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * 
- * A class for cryptographic utilities
- *
+ * A class for cryptographic utilities. <br>
+ * This class provides encryption and decryption methods which use AES block
+ * cipher in GCM mode for authenticated encryption <br>
+ * To ensure additional security, in the following implementation SecureRandom
+ * is re-seeded after producing every 2^16 bytes of pseudo random byte
+ * generation. <br>
+ * No provider is hard coded in the code following the general recommendations
+ * <br>
+ * for transmission over network or storage, the key or the cipher text should
+ * be encoded using Base64 encoding.
+ * 
  */
 public class Crypto {
   
@@ -95,6 +104,29 @@ public class Crypto {
     return cipher.doFinal(messageCipher);
   }
   
+  /**
+   * 
+   * This method creates the Initialization Vector (IV). An initialization
+   * Vector (IV) is required for GCM. The IV is not a secret. The only
+   * requirement being it has to be random or unpredictable. In Java, the
+   * SecuredRandom class is meant to produce cryptographically strong pseudo
+   * random numbers. The pseudo-random number generation algorithm can be
+   * specified in the {@code getInstance()} method. However, since Java 8, the
+   * recommended way is to use {getInstanceStrong()} method which will use the
+   * strongest algorithm configured and provided by the Provider. <br>
+   * The recipient needs to know the IV to be able to decrypt the cipher text.
+   * Therefore the IV needs to be transferred along with the cipher text. Some
+   * implementations send the IV as AD (Associated Data) which means that the
+   * authentication tag will be calculated on both the cipher text and the IV.
+   * However, that is not required. The IV can be simply pre-pended with the
+   * cipher text because if the IV is changed during transmission due to a
+   * deliberate attack or network/file system error, the authentication tag
+   * validation will fail anyway.
+   * 
+   * @param bytesNum
+   *          The size of the Initialization Vector (IV)
+   * @return
+   */
   public static byte[] getIV(int bytesNum) {
     
     if (bytesNum < 1) throw new IllegalArgumentException(
@@ -122,6 +154,23 @@ public class Crypto {
     return iv;
   }
   
+  /**
+   * 
+   * Strings should not be used to hold the clear text message or the key, as
+   * Strings go in the String pool and they will show up in a heap dump. For the
+   * same reason, the client calling these encryption or decryption methods
+   * should clear all the variables or arrays holding the message or the key
+   * after they are no longer needed. Since Java 8 does not provide an easy
+   * mechanism to clear the key from SecretKeySpec, this method uses reflection
+   * to clear the key
+   * 
+   * @param key
+   *          The secret key used to do the encryption
+   * @throws IllegalArgumentException
+   * @throws IllegalAccessException
+   * @throws NoSuchFieldException
+   * @throws SecurityException
+   */
   @SuppressWarnings("unused")
   private static void clearSecretKeySpec(SecretKeySpec key)
       throws IllegalArgumentException, IllegalAccessException,
