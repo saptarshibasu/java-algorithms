@@ -1,7 +1,6 @@
 package com.sapbasu.javastudy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -59,25 +58,24 @@ public class Trie {
         strList.add(input);
       }
       if (value.getChildCount() > 0) {
-        strList.addAll(getCompleteStrings(value, input));
+        getCompleteStrings(value, input, strList);
       }
     });
     return strList;
   }
   
-  private List<String> getCompleteStrings(TrieNode node, String prefix) {
-    List<String> nodeStrList = new ArrayList<String>();
+  private void getCompleteStrings(TrieNode node, String prefix,
+      List<String> strList) {
     if (node.getChildCount() == 0) {
-      nodeStrList.add(prefix);
+      strList.add(prefix);
     } else {
       for (int i = 0; i < node.children.length; i++) {
         if (node.children[i] != null) {
-          nodeStrList.addAll(getCompleteStrings(node.children[i],
-              prefix + String.valueOf(Character.toChars((i + 'a')))));
+          getCompleteStrings(node.children[i],
+              prefix + String.valueOf(Character.toChars((i + 'a'))), strList);
         }
       }
     }
-    return nodeStrList;
   }
   
   private Optional<TrieNode> getLastCharacterNode(String input) {
@@ -129,10 +127,8 @@ public class Trie {
     public static final int ALPHABET_SIZE = 26;
     
     private TrieNode[] children = new TrieNode[ALPHABET_SIZE];
-    private boolean leafNode = true;
     private int childCount = 0;
     private boolean wordBoundary = false;
-
     
     public void setWordBoundary() {
       this.wordBoundary = true;
@@ -160,7 +156,7 @@ public class Trie {
       TrieNode node = children[Character.toLowerCase(input) - 'a'];
       return Optional.ofNullable(node);
     }
-      
+    
     public TrieNode add(char input) {
       
       Objects.requireNonNull(input, "Input cannpt be null");
@@ -168,7 +164,6 @@ public class Trie {
       if (!Pattern.matches("[A-Za-z]", String.valueOf(input)))
         throw new IllegalArgumentException(
             "The input must be in the range 'a' to 'z' or 'A' to 'Z'");
-      leafNode = false;
       if (children[Character.toLowerCase(input) - 'a'] == null) {
         children[Character.toLowerCase(input) - 'a'] = new TrieNode();
         childCount++;
