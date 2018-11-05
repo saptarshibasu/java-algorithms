@@ -1,5 +1,6 @@
 package com.sapbasu.javastudy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +42,58 @@ public class Trie {
     
     return exists(input, rootNode);
   }
-    
+  
+  /**
+   * 
+   * Given a String prefix, this function can return the list of Strings that
+   * have the input prefix
+   * 
+   * @param input
+   *          String prefix
+   * @return
+   */
+  public List<String> autoComplete(String input) {
+    List<String> strList = new ArrayList<String>();
+    getLastCharacterNode(input).ifPresent((value) -> {
+      if (value.isWordBoundary()) {
+        strList.add(input);
+      }
+      if (value.getChildCount() > 0) {
+        strList.addAll(getCompleteStrings(value, input));
+      }
+    });
+    return strList;
+  }
+  
+  private List<String> getCompleteStrings(TrieNode node, String prefix) {
+    List<String> nodeStrList = new ArrayList<String>();
+    if (node.getChildCount() == 0) {
+      nodeStrList.add(prefix);
+    } else {
+      for (int i = 0; i < node.children.length; i++) {
+        if (node.children[i] != null) {
+          nodeStrList.addAll(getCompleteStrings(node.children[i],
+              prefix + String.valueOf(Character.toChars((i + 'a')))));
+        }
+      }
+    }
+    return nodeStrList;
+  }
+  
+  private Optional<TrieNode> getLastCharacterNode(String input) {
+    TrieNode[] node = new TrieNode[1];
+    node[0] = rootNode;
+    for (int i = 0; i < input.length(); i++) {
+      node[0] = node[0].exists(input.charAt(i)).orElseGet(() -> {
+        return null;
+      });
+      if (node[0] == null) {
+        break;
+      }
+    }
+    return Optional.ofNullable(node[0]);
+  }
+  
   private void add(String input, TrieNode node) {
     Objects.requireNonNull(input, "Input cannot be null");
     Objects.requireNonNull(node, "Input cannot be null");
@@ -50,6 +102,8 @@ public class Trie {
     String remainingString = input.substring(1, input.length());
     if (remainingString.length() > 0) {
       add(remainingString, addedNode);
+    } else {
+      addedNode.setWordBoundary();
     }
   }
   
@@ -77,9 +131,23 @@ public class Trie {
     private TrieNode[] children = new TrieNode[ALPHABET_SIZE];
     private boolean leafNode = true;
     private int childCount = 0;
+    private boolean wordBoundary = false;
+
     
-    public TrieNode() {
-      Arrays.fill(children, null);
+    public void setWordBoundary() {
+      this.wordBoundary = true;
+    }
+    
+    public void resetWordBoundary() {
+      this.wordBoundary = false;
+    }
+    
+    public int getChildCount() {
+      return childCount;
+    }
+    
+    public boolean isWordBoundary() {
+      return wordBoundary;
     }
     
     public Optional<TrieNode> exists(char input) {
@@ -92,11 +160,7 @@ public class Trie {
       TrieNode node = children[Character.toLowerCase(input) - 'a'];
       return Optional.ofNullable(node);
     }
-    
-    public boolean isLeafNode() {
-      return leafNode;
-    }
-    
+      
     public TrieNode add(char input) {
       
       Objects.requireNonNull(input, "Input cannpt be null");
