@@ -13,7 +13,6 @@ public class TLSServerClientTest {
   private static final int SERVER_PORT = 8444;
   private static final String TLS_VERSION = "TLSv1.2";
   private static final int SERVER_COUNT = 1;
-  private static final int SERVER_THREAD_COUNT = 1;
   private static final String SERVER_HOST_NAME = "127.0.0.1";
   private static final String TRUST_STORE_NAME = "servercert.p12";
   private static final char[] TRUST_STORE_PWD = new char[] {'a', 'b', 'c', '1',
@@ -33,8 +32,8 @@ public class TLSServerClientTest {
     ExecutorService serverExecutor = Executors.newFixedThreadPool(SERVER_COUNT);
     serverExecutor.submit(() -> {
       try {
-        server.serve(SERVER_PORT, SERVER_THREAD_COUNT, TLS_VERSION,
-            TRUST_STORE_NAME, TRUST_STORE_PWD, KEY_STORE_NAME, KEY_STORE_PWD);
+        server.serve(SERVER_PORT, TLS_VERSION, TRUST_STORE_NAME,
+            TRUST_STORE_PWD, KEY_STORE_NAME, KEY_STORE_PWD);
       } catch (Exception e) {
         e.printStackTrace();
       }

@@ -7,16 +7,11 @@ import java.net.Socket;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
 
 /*
@@ -26,20 +21,15 @@ import javax.net.ssl.TrustManagerFactory;
  */
 
 public class TLSServer {
-  public void serve(int port, int threadCount, String tlsVersion,
-      String trustStoreName, char[] trustStorePassword, String keyStoreName,
-      char[] keyStorePassword) throws Exception {
+  public void serve(int port, String tlsVersion, String trustStoreName,
+      char[] trustStorePassword, String keyStoreName, char[] keyStorePassword)
+      throws Exception {
     
     Objects.requireNonNull(tlsVersion, "TLS version is mandatory");
     
     if (port <= 0) {
       throw new IllegalArgumentException(
           "Port number cannot be less than or equal to 0");
-    }
-    
-    if (threadCount <= 0) {
-      throw new IllegalArgumentException(
-          "Thread count cannot be less than or equal to 0");
     }
     
     KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -68,26 +58,14 @@ public class TLSServer {
       
       sslListener.setNeedClientAuth(true);
       sslListener.setEnabledProtocols(new String[] {tlsVersion});
-      
-      HostnameVerifier allHostsValid = new HostnameVerifier() {
-        public boolean verify(String hostname, SSLSession session) {
-          return true;
-        }
-      };
-      
-      HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-      
-      ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
+      // NIO to be implemented
       while (true) {
-        threadPool.submit(() -> {
-          try (Socket socket = sslListener.accept()) {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println("Hello World!");
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        });
-        
+        try (Socket socket = sslListener.accept()) {
+          PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+          out.println("Hello World!");
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
     }
   }
