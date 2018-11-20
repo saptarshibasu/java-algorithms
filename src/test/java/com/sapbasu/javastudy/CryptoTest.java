@@ -29,9 +29,12 @@ public class CryptoTest {
     
     SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(),
         "AES");
+    Crypto.clearSecret(secretKey);
     
     byte[] encryptedBytes = Crypto.encrypt(inputBytes, secretKeySpec);
     byte[] decryptedBytes = Crypto.decrypt(encryptedBytes, secretKeySpec);
+    
+    Crypto.clearSecret(secretKeySpec);
     
     assertArrayEquals(inputBytes, decryptedBytes);
     

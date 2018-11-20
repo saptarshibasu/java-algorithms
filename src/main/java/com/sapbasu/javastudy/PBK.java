@@ -14,6 +14,7 @@ public class PBK {
     PBEKeySpec keySpec = new PBEKeySpec(password, salt, iterations, keyLength);
     SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(KEY_GEN_FUNC);
     SecretKey secretKey = keyFactory.generateSecret(keySpec);
-    return new SecretKeySpec(secretKey.getEncoded(), algorithm);
+    SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(), algorithm);
+    return secretKeySpec;
   }
 }

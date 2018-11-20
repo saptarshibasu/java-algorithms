@@ -7,14 +7,12 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Test;
 
 public class PBKTest {
-  private int KEY_LEN = 256; // bits
   
   @Test
   public void whenPBKCalled_givenPassword_generatesKey()
@@ -33,8 +31,12 @@ public class PBKTest {
     SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(),
         "AES");
     
+    Crypto.clearSecret(secretKey);
+    
     byte[] encryptedBytes = Crypto.encrypt(inputBytes, secretKeySpec);
     byte[] decryptedBytes = Crypto.decrypt(encryptedBytes, secretKeySpec);
+    
+    Crypto.clearSecret(secretKeySpec);
     
     assertArrayEquals(inputBytes, decryptedBytes);
     

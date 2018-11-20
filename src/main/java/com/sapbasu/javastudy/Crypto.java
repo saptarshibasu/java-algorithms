@@ -12,6 +12,7 @@ import java.util.Optional;
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.security.auth.Destroyable;
 
 /**
  * 
@@ -172,7 +173,7 @@ public class Crypto {
    * @throws SecurityException
    */
   @SuppressWarnings("unused")
-  private static void clearSecretKeySpec(SecretKeySpec key)
+  public static void clearSecret(Destroyable key)
       throws IllegalArgumentException, IllegalAccessException,
       NoSuchFieldException, SecurityException {
     Field keyField = key.getClass().getDeclaredField("key");
