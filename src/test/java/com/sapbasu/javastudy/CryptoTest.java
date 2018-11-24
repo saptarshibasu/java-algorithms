@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -24,7 +25,7 @@ public class CryptoTest {
     byte[] inputBytes = convertInputToBytes(input);
     
     KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-    keyGen.init(KEY_LEN);
+    keyGen.init(KEY_LEN, SecureRandom.getInstanceStrong());
     SecretKey secretKey = keyGen.generateKey();
     
     SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(),

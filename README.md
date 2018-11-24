@@ -20,7 +20,7 @@ e.g. 44 mod 32 = 0010 1100 & 0001 1111 = 0000 1100 = 12
 
 This enables efficiently identifying the bucket from the hashcode
 
-e.g. hashcode & (Capacity - 1) enstead of modulo or division operation
+e.g. hashcode & (Capacity - 1) instead of modulo or division operation
 
 ### Sorted Data helps in Branch Prediction
 
@@ -38,7 +38,15 @@ If the map is constructed to preserve access order, every `get()` call will incr
 
 ### Unicode Charset
 
-UTF-8 is the most commonly used Unicode character encoding. It is a variable length Unicode encoding.
+UTF-8 & UTF-16 are both variable length Unicode encoding. Only UTF-32 is a fixed length Unicode encoding and it takes 4 bytes to encode each character. Hence, UTF-32 is space inefficient. 
+
+Java (upto version 8) internally uses UTF-16 to encode `String` characters. UTF-16 a subset of characters in 2 bytes, while the other characters need 4 bytes. Since the primitive `char` datatype is always 2 bytes, therefore to encode some of the unicode character (e.g. an emoji character) in a `String`, 2 `char` elements are required. On the other hand, all ASCII characters and some other characters have smaller sized Unicode encoding in UTF-16 and hence they need only 1 `char`. Therefore, it is better to avoid the String functions like `charAt` or any other function that doesn't respect the fact that characters may span 2 `char` elements.
+
+    String str="😂s🍆";
+    System.out.println(str.length()); // 5
+    System.out.println(str.substring(0, str.indexOf('s'))); // 😂
+
+Compact String is introduced since Java 9 which encodes a `String` in Latin-1, also called ISO-8859-1 as long as all characters of the `String` can be encoded in a single byte, otherwise UTF-16 will be used as usual.
 
 ### JSON Web Token (JWT) Digital Signature Algorithm
 
@@ -90,8 +98,21 @@ A nice property of 31 is that the multiplication can be replaced by a shift and 
 ### Generate an AES 256 bit Key
 
     KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-    keyGen.init(256);
+    keyGen.init(256, SecureRandom.getInstanceStrong());
     SecretKey secretKey = keyGen.generateKey();
+
+### Generate an AES 256 bit Key from a Password using a Key Derivation Function
+
+    SecureRandom random = SecureRandom.getInstanceStrong();
+	byte[] salt = new byte[32];
+	random.nextBytes(salt);
+	PBEKeySpec keySpec = new PBEKeySpec(password, salt, iterations, 
+	   keyLength);
+	SecretKeyFactory keyFactory = 
+		SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+	SecretKey secretKey = keyFactory.generateSecret(keySpec);
+	SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(),
+		"AES");
 
 ### Generate a 128 bit Random IV / Nonce
 
@@ -103,3 +124,10 @@ A nice property of 31 is that the multiplication can be replaced by a shift and 
 	prng.nextBytes(ivNonce);
 	return ivNonce;
 
+### Growth of Arraylist
+
+ArrayList grows by 50% of its current size. The increment is size is calculated by shifting the bits of the current size by 1 to the right.
+
+### Growth of StringBuilder
+
+`StringBuilder` grows by the current size + additional 2 bytes. So, the new size would be (current size) * 2 + 2

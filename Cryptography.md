@@ -87,17 +87,22 @@ A typical cipher suite name looks like this:
 *TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256*
 
 Here 
-* *ECDHE* - Symmetric key exchange algorithm
-* *ECDSA* - Digital Signature algorithm used for signing the key
-* *AES_128_GCM* - Block cipher and mode with 128 bit key
+* *ECDHE* - Symmetric key exchange algorithm. *ECDHE* stands for Elliptic Curve Diffie Hellman Ephemeral. The *Elliptic* variant (the first *E*) is used for performance, whereas the *Ephemeral* variant (the last *E*) is for *forward secrecy*. Forward secrecy means that if an attacker keeps recording all the communications over TLS and at a later point of time somehow gets hold of the private key, he/she cannot decrypt the past recorded communications. RSA is an alternative to ECDHE (as in TLS_RSA_WITH_AES_128_GCM_SHA256) and used in older cipher suites. However, RSA does not provide forward secrecy and hence such cipher suites are considered weak today. The older cipher suites using the other variants of Diffie Hellman algorithm that don't use either the Elliptic Curve or the Ephemeral keys shouldn't be used anymore.
+* *ECDSA* - Digital Signature algorithm used for signing the key. *ECDSA* is used for authenticating the shared secret. ECDSA is weaker and slower than the other authenticating algorithms like HMAC. Yet it is used for shared key authentication because it does not need the verifier know the secret key used to create the authentication tag. The verifier can very well use the public key to verify the integrity of the message. Here also RSA is an alternative. However, to acheive a certain level of security, RSA needs much longer key than ECDSA. Therefore ECDSA provides better performance in mobile devices or other devices with limited resources.
+* *AES_128_GCM* - Block cipher and mode with 128 bit key. Once a common secret key is shared between both the parties (usually a browser and a web server), a symmetric algorithm is used to encrypt the message exchanges between the parties. In this particular case, the block cipher *AES* with *128* bit key and *GCM* authentication mode is used. (Note: AES block size is always 128 bits which is not usually mentioned. AES_256 or AES_128 actually indicate the key size in bits).
+* *SHA256* - Hashing algorithm
 
-*ECDHE* stands for Elliptic Curve Diffie Hellman Ephemeral. The *Elliptic* variant (the first *E*) is used for performance, whereas the *Ephemeral* variant (the last *E*) is for *forward secrecy*. Forward secrecy means that if an attacker keeps recording all the communications over TLS and at a later point of time somehow gets hold of the private key, he/she cannot decrypt the past recorded communications. 
+## Key Generation
 
-RSA is an alternative to ECDHE (as in TLS_RSA_WITH_AES_128_GCM_SHA256) and used in older cipher suites. However, RSA does not provide forward secrecy and hence such cipher suites are considered weak today.
+Key generation function usually needs the length of key to be produced and a source of randomness. In certain use cases where the user wants to use a password to encrypt a message, the password is used by a key derivation function to generate a key which is then used to encrypt the message. One such key derivation function is PBKDF2.
 
-The older cipher suites using the other variants of Diffie Hellman algorithm that don't use either the Elliptic Curve or the Ephemeral keys shouldn't be used anymore.
+## Key Store
 
-*ECDSA* is used for authenticating the shared secret. ECDSA is weaker and slower than the other authenticating algorithms like HMAC. Yet it is used for shared key authentication because it does not need the verifier know the secret key used to create the authentication tag. The verifier can very well use the public key to verify the integrity of the message. Here also RSA is an alternative. However, to acheive a certain level of security, RSA needs much longer key than ECDSA. Therefore ECDSA provides better performance in mobile devices or other devices with limited resources.
+In cryptography, PKCS #12 defines an archive file format for storing many cryptography objects as a single file. It is commonly used to bundle a private key with its X.509 certificate or to bundle all the members of a chain of trust. The filename extension for PKCS #12 files is ".p12" or ".pfx".
 
-*AES_128_GCM* - Once a common secret key is shared between both the parties (usually a browser and a web server), a symmetric algorithm is used to encrypt the message exchanges between the parties. In this particular case, the block cipher *AES* with *128* bit key and *GCM* authentication mode is used. (Note: AES block size is always 128 bits which is not usually mentioned. AES_256 or AES_128 actually indicate the key size in bits).
+PEM is also another container format that may contain certificate, private key, certificate chain.
+
+Both PKCS #12 and PEM are governed by RFCs.
+
+
 
