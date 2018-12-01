@@ -1,8 +1,8 @@
 ## Some of my StackOverflow Answers
 
-[Why Are HashMaps Implemented Using Powers of Two?](https://stackoverflow.com/a/53526992/1235935)
-[How to encrypt String in Java](https://stackoverflow.com/a/53015144/1235935)
-[SSLServerSocket and certificate setup](https://stackoverflow.com/a/53325115/1235935)
+* [Why Are HashMaps Implemented Using Powers of Two?](https://stackoverflow.com/a/53526992/1235935)
+* [How to encrypt String in Java](https://stackoverflow.com/a/53015144/1235935)
+* [SSLServerSocket and certificate setup](https://stackoverflow.com/a/53325115/1235935)
 
 ### Avoid Returning null
 
