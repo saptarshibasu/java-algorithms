@@ -82,7 +82,7 @@ PCI DSS no longer supports TLS1.0 and below versions.
 
 ### TLS Cipher Suite
 
-A typical cipher suite name looks like this:
+A typical cipher suite name (in TLS1.2) looks like this:
 
 *TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256*
 
